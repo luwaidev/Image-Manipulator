@@ -98,6 +98,12 @@ public class Processor
          *  the opposite order horizontally. Look at our solution to the
          *  character array flip task from class for hints.
          */ 
+        
+        for (int y = 0; y < bi.getHeight(); y++){
+            for (int x = 0; x < bi.getWidth(); x++){
+            tempBI.setRGB(bi.getWidth()-x,bi.getHeight()-y,bi.getRGB(x,y)) ;
+        }
+        }
 
     }
 

@@ -42,7 +42,7 @@ public class Background extends World
     public Background()
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
-        super(1024, 800, 1); 
+        super(1000, 720, 1); 
 
         // Initialize buttons and the image --> Performed first so that the details can be retrieved and displayed
         image = new ImageHolder(STARTING_FILE); // The image holder constructor does the actual image loading
