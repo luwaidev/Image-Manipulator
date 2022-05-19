@@ -101,11 +101,187 @@ public class Processor
         
         for (int y = 0; y < bi.getHeight(); y++){
             for (int x = 0; x < bi.getWidth(); x++){
-            tempBI.setRGB(bi.getWidth()-x,bi.getHeight()-y,bi.getRGB(x,y)) ;
-        }
+            bi.setRGB(tempBI.getWidth()-x-1,y,tempBI.getRGB(x,y)) ;
+            }
         }
 
     }
+    
+    public static void flipVertical (BufferedImage bi){
+        BufferedImage tempBI = Background.deepCopy (bi);                                                                                                    
+        
+        for (int y = 0; y < bi.getHeight(); y++){
+            for (int x = 0; x < bi.getWidth(); x++){
+            bi.setRGB(x,tempBI.getHeight()-1-y,tempBI.getRGB(x,y)) ;
+            }
+        }
+    }
+    
+    public static void rotate90(BufferedImage bi){
+        
+    }
+    public static void rotate180(BufferedImage bi){
+        BufferedImage tempBI = Background.deepCopy (bi);                                                                                                    
+        
+        for (int y = 0; y < bi.getHeight(); y++){
+            for (int x = 0; x < bi.getWidth(); x++){
+            bi.setRGB(tempBI.getWidth()-x-1,tempBI.getHeight()-1-y,tempBI.getRGB(x,y)) ;
+            }
+        }
+    }
+    
+    public static void greyScale(BufferedImage bi){
+        // Get image size to use in for loops
+        int xSize = bi.getWidth();
+        int ySize = bi.getHeight();
+
+        // Using array size as limit
+        for (int y = 0; y < ySize; y++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                // Calls method in BufferedImage that returns R G B and alpha values
+                // encoded together in an integer
+                int rgba = bi.getRGB(x, y);
+                
+                // Call the unpackPixel method to retrieve the four integers for
+                // R, G, B and alpha and assign them each to their own integer
+                int[] rgbValues = unpackPixel (rgba);
+
+                int alpha = rgbValues[0]; // 0-255
+                int red = rgbValues[1];
+                int green = rgbValues[2];
+                int blue = rgbValues[3];
+
+                int newColour = packagePixel (0, 0, 0, alpha);
+                bi.setRGB (x, y, newColour);
+            }
+        }
+    }
+    
+    public static void negative(BufferedImage bi){
+        // Get image size to use in for loops
+        int xSize = bi.getWidth();
+        int ySize = bi.getHeight();
+
+        // Using array size as limit
+        for (int y = 0; y < ySize; y++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                // Calls method in BufferedImage that returns R G B and alpha values
+                // encoded together in an integer
+                int rgba = bi.getRGB(x, y);
+                
+                // Call the unpackPixel method to retrieve the four integers for
+                // R, G, B and alpha and assign them each to their own integer
+                int[] rgbValues = unpackPixel (rgba);
+
+                int alpha = rgbValues[0]; // 0-255
+                int red = rgbValues[1];
+                int green = rgbValues[2];
+                int blue = rgbValues[3];
+
+                blue = 255-blue;
+                red = 255-red;
+                green = 255-green;
+
+                int newColour = packagePixel (red, green, blue, alpha);
+                bi.setRGB (x, y, newColour);
+            }
+        }
+    }
+    
+    public static void purplify(BufferedImage bi){
+        // Get image size to use in for loops
+        int xSize = bi.getWidth();
+        int ySize = bi.getHeight();
+
+        // Using array size as limit
+        for (int y = 0; y < ySize; y++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                // Calls method in BufferedImage that returns R G B and alpha values
+                // encoded together in an integer
+                int rgba = bi.getRGB(x, y);
+                
+                // Call the unpackPixel method to retrieve the four integers for
+                // R, G, B and alpha and assign them each to their own integer
+                int[] rgbValues = unpackPixel (rgba);
+
+                int alpha = rgbValues[0]; // 0-255
+                int red = rgbValues[1];
+                int green = rgbValues[2];
+                int blue = rgbValues[3];
+
+                // make the pic BLUE-er
+                if (blue < 253)
+                    blue += 2;
+                if (red < 253)
+                    red+=2;
+                if (green >= 50)
+                    green--;
+
+                int newColour = packagePixel (red, green, blue, alpha);
+                bi.setRGB (x, y, newColour);
+            }
+        }
+    }
+    
+    public static void brightenRed(BufferedImage bi){
+        // Get image size to use in for loops
+        int xSize = bi.getWidth();
+        int ySize = bi.getHeight();
+
+        // Using array size as limit
+        for (int y = 0; y < ySize; y++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                // Calls method in BufferedImage that returns R G B and alpha values
+                // encoded together in an integer
+                int rgba = bi.getRGB(x, y);
+                
+                // Call the unpackPixel method to retrieve the four integers for
+                // R, G, B and alpha and assign them each to their own integer
+                int[] rgbValues = unpackPixel (rgba);
+
+                int alpha = rgbValues[0]; // 0-255
+                int red = rgbValues[1];
+                int green = rgbValues[2];
+                int blue = rgbValues[3];
+
+                // make the pic BLUE-er
+                if (blue < 253)
+                    blue += 2;
+                if (red < 253)
+                    red+=2;
+                if (green >= 50)
+                    green--;
+
+                int newColour = packagePixel (red, green, blue, alpha);
+                bi.setRGB (x, y, newColour);
+            }
+        }
+    }
+    
+    public static void addContrast(BufferedImage bi){
+        
+    }
+    
+    public static void removeContrast(BufferedImage bi){
+        
+    }
+    
+    public static void bloom(BufferedImage bi){
+        
+    }
+    
+    public static void pixalate(BufferedImage bi){
+        
+    }
+
 
     /**
      * Takes in a BufferedImage and returns a GreenfootImage.
