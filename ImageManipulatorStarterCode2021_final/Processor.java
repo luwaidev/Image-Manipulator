@@ -31,14 +31,84 @@ import greenfoot.*;
 
 public class Processor  
 {
-    /**
-     * Example colour altering method by Mr. Cohen. This method will
-     * increase the blue value while reducing the red and green values.
-     * 
-     * Demonstrates use of packagePixel() and unpackPixel() methods.
-     * 
-     * @param bi    The BufferedImage (passed by reference) to change.
-     */
+     public static void redify (BufferedImage bi)
+    {
+        // Get image size to use in for loops
+        int xSize = bi.getWidth();
+        int ySize = bi.getHeight();
+
+        // Using array size as limit
+        for (int y = 0; y < ySize; y++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                // Calls method in BufferedImage that returns R G B and alpha values
+                // encoded together in an integer
+                int rgba = bi.getRGB(x, y);
+                
+                // Call the unpackPixel method to retrieve the four integers for
+                // R, G, B and alpha and assign them each to their own integer
+                int[] rgbValues = unpackPixel (rgba);
+
+                int alpha = rgbValues[0]; // 0-255
+                int red = rgbValues[1];
+                int green = rgbValues[2];
+                int blue = rgbValues[3];
+
+                // make the pic BLUE-er
+                if (blue >= 50)
+                    blue--;
+                if (red < 253)
+                    red += 2;
+                if (green >= 50)
+                    green--;
+
+                int newColour = packagePixel (red, green, blue, alpha);
+                bi.setRGB (x, y, newColour);
+            }
+        }
+
+    }
+    
+    public static void greenify (BufferedImage bi)
+    {
+        // Get image size to use in for loops
+        int xSize = bi.getWidth();
+        int ySize = bi.getHeight();
+
+        // Using array size as limit
+        for (int y = 0; y < ySize; y++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                // Calls method in BufferedImage that returns R G B and alpha values
+                // encoded together in an integer
+                int rgba = bi.getRGB(x, y);
+                
+                // Call the unpackPixel method to retrieve the four integers for
+                // R, G, B and alpha and assign them each to their own integer
+                int[] rgbValues = unpackPixel (rgba);
+
+                int alpha = rgbValues[0]; // 0-255
+                int red = rgbValues[1];
+                int green = rgbValues[2];
+                int blue = rgbValues[3];
+
+                // make the pic BLUE-er
+                if (blue >= 50)
+                    blue--;
+                if (red >= 50)
+                    red--;
+                if (green < 253)
+                    green += 2;
+
+                int newColour = packagePixel (red, green, blue, alpha);
+                bi.setRGB (x, y, newColour);
+            }
+        }
+
+    }
+    
     public static void blueify (BufferedImage bi)
     {
         // Get image size to use in for loops
@@ -78,10 +148,48 @@ public class Processor
 
     }
 
-    public static BufferedImage rotate90Clockwise (BufferedImage bi){
-        BufferedImage newBi = new BufferedImage (bi.getHeight(), bi.getWidth(), 3);
+    public static BufferedImage rotate90CW (BufferedImage bi){
+        System.out.println("rotate");
+        BufferedImage newBi = Background.deepCopy(bi) ;
+        bi = new BufferedImage(newBi.getHeight(), newBi.getWidth(), 3);
+        
+        for (int y = 0; y < newBi.getHeight(); y++){
+            for (int x = 0; x < newBi.getWidth(); x++){
+                bi.setRGB(y,x,newBi.getRGB(x,y)) ;
+            }
+        }
+        //bi = newBi;
+        
+        return bi;
+    }
+    public static GreenfootImage rotate90CCW (BufferedImage bi){
+        System.out.println("rotate");
+        BufferedImage newBi = Background.deepCopy(bi) ;
+        bi = new BufferedImage(newBi.getHeight(), newBi.getWidth(), 3);
+        
+        for (int y = 0; y < newBi.getHeight(); y++){
+            for (int x = 0; x < newBi.getWidth(); x++){
+                bi.setRGB(y,x,newBi.getRGB(x,y)) ;
+            }
+        }
+        
+        BufferedImage tempBI = Background.deepCopy (bi);
 
-        return newBi;
+        /**
+         *  Your task here is to use a nested pair of for loops to move
+         *  pixels from the temporary BufferedImage tempBI back to bi in 
+         *  the opposite order horizontally. Look at our solution to the
+         *  character array flip task from class for hints.
+         */ 
+        
+        for (int y = 0; y < bi.getHeight(); y++){
+            for (int x = 0; x < bi.getWidth(); x++){
+            bi.setRGB(tempBI.getWidth()-x-1,y,tempBI.getRGB(x,y)) ;
+            }
+        }
+        //bi = newBi;
+        
+        return createGreenfootImageFromBI(bi);
     }
 
     public static void flipHorizontal (BufferedImage bi)
@@ -130,6 +238,8 @@ public class Processor
         }
     }
     
+
+    
     public static void greyScale(BufferedImage bi){
         // Get image size to use in for loops
         int xSize = bi.getWidth();
@@ -152,8 +262,9 @@ public class Processor
                 int red = rgbValues[1];
                 int green = rgbValues[2];
                 int blue = rgbValues[3];
-
-                int newColour = packagePixel (0, 0, 0, alpha);
+                
+                int rgb = (int)((double)(red+green+blue)/3.0);
+                int newColour = packagePixel (rgb, rgb, rgb, alpha);
                 bi.setRGB (x, y, newColour);
             }
         }
@@ -252,13 +363,10 @@ public class Processor
                 int green = rgbValues[2];
                 int blue = rgbValues[3];
 
-                // make the pic BLUE-er
-                if (blue < 253)
-                    blue += 2;
-                if (red < 253)
-                    red+=2;
-                if (green >= 50)
-                    green--;
+                // make the pic RED-er
+                if (red <= 252 && red*2 >= (green+blue) ){
+                    red+= 2;
+                }
 
                 int newColour = packagePixel (red, green, blue, alpha);
                 bi.setRGB (x, y, newColour);
@@ -266,12 +374,101 @@ public class Processor
         }
     }
     
-    public static void addContrast(BufferedImage bi){
-        
+    public static void addSaturation(BufferedImage bi){
+        // Get image size to use in for loops
+        int xSize = bi.getWidth();
+        int ySize = bi.getHeight();
+
+        // Using array size as limit
+        for (int y = 0; y < ySize; y++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                // Calls method in BufferedImage that returns R G B and alpha values
+                // encoded together in an integer
+                int rgba = bi.getRGB(x, y);
+                
+                // Call the unpackPixel method to retrieve the four integers for
+                // R, G, B and alpha and assign them each to their own integer
+                int[] rgbValues = unpackPixel (rgba);
+
+
+                // make the pic BLUE-er
+                /*
+                for (int i = 0; i < 4 ;i++){
+                    if (i != 0 && rgbValues[i] > 255/2){
+                        rgbValues[i]++;
+                    }   else {
+                        rgbValues[i]--;
+                    }
+                }
+                */
+                int alpha = rgbValues[0]; // 0-255
+                int red = rgbValues[1];
+                int green = rgbValues[2];
+                int blue = rgbValues[3];
+                
+                if (blue+red+green > 382){
+                    blue+=blue >=255?0:1;
+                    red+=red >=255?0:1;
+                    green+=green>=255?0:1;
+                    
+                }   else {
+                    blue+=blue <=0?0:-1;
+                    red+=red <=0?0:-1;
+                    green+=green<=0?0:-1;
+                }
+                
+                
+                
+
+                int newColour = packagePixel (red, green, blue, alpha);
+                bi.setRGB (x, y, newColour);
+            }
+        }
     }
     
-    public static void removeContrast(BufferedImage bi){
-        
+    public static void removeSaturation(BufferedImage bi){
+        // Get image size to use in for loops
+        int xSize = bi.getWidth();
+        int ySize = bi.getHeight();
+
+        // Using array size as limit
+        for (int y = 0; y < ySize; y++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                // Calls method in BufferedImage that returns R G B and alpha values
+                // encoded together in an integer
+                int rgba = bi.getRGB(x, y);
+                
+                // Call the unpackPixel method to retrieve the four integers for
+                // R, G, B and alpha and assign them each to their own integer
+                int[] rgbValues = unpackPixel (rgba);
+
+                int alpha = rgbValues[0]; // 0-255
+                int red = rgbValues[1];
+                int green = rgbValues[2];
+                int blue = rgbValues[3];
+
+
+                if (blue+red+green > 382){
+                    blue+=blue <=0?0:-1;
+                    red+=red <=0?0:-1;
+                    green+=green<=0?0:-1;
+                    
+                }   else {
+                    blue+=blue >=255?0:1;
+                    red+=red >=255?0:1;
+                    green+=green>=255?0:1;
+                }
+                
+                
+
+                int newColour = packagePixel (red, green, blue, alpha);
+                bi.setRGB (x, y, newColour);
+            }
+        }
     }
     
     public static void bloom(BufferedImage bi){

@@ -33,7 +33,7 @@ import java.io.FileNotFoundException;
 public class ImageHolder extends Actor
 {
     // The two image objects
-    private GreenfootImage displayImage; // image to display 
+    public GreenfootImage displayImage; // image to display 
     private GreenfootImage fullImage; // image to process
 
     private double scale;
